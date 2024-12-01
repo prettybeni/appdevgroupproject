@@ -3,10 +3,10 @@
     <!-- Navbar -->
     <nav class="navbar">
       <ul>
-        <li class="active">
-          <a href="/home">Home</a>
-        </li>
         <li>
+          <a href="/dashboard">Home</a>
+        </li>
+        <li class="active">
           <a href="/menu">Menu</a>
         </li>
         <li>
@@ -19,64 +19,89 @@
       <!-- Cart Icon and Logout Button -->
       <div class="nav-icons">
         <a href="/cart" class="cart-icon">
-          <i class="fas fa-shopping-cart"></i> <!-- FontAwesome cart icon -->
+          <i class="fas fa-shopping-cart"></i>
         </a>
         <a href="/" class="logout">Logout</a>
       </div>
     </nav>
 
-    <!-- Home Section -->
-    <section class="home">
-      <h1>Welcome to Lebrew Foodhouse eShop</h1>
-      <p>Your favorite milk tea, delivered to your doorstep!</p>
-      <button class="shop-now" onclick="window.location.href='/menu'">Shop Now</button>
+    <!-- Menu Section -->
+    <section class="menu">
+      <!-- Loop through categories -->
+      <div v-for="(products, category) in categories" :key="category" class="category">
+        <h2>{{ category }}</h2>
+        <div class="products">
+          <!-- Loop through products for each category -->
+          <div v-for="product in products" :key="product.id" class="product-card" @click="goToProductPage(product.id)">
+            <img :src="`http://localhost:5000${product.image_url}`" :alt="product.name" class="product-image">
+            <div class="product-info">
+              <h3>{{ product.name }}</h3>
+              <p>{{ product.description }}</p>
+              <div class="price-section">
+                <span class="price">P{{ product.price }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-  
+  data() {
+    return {
+      categories: {}, // This will store products grouped by category
+    };
+  },
+  mounted() {
+    this.fetchProducts();
+  },
+  methods: {
+    async fetchProducts() {
+      try {
+        const response = await axios.get('http://localhost:5000/api/menu');
+        const groupedCategories = this.groupProductsByCategory(response.data);
+        this.categories = groupedCategories;
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    },
+    groupProductsByCategory(products) {
+      const categories = {};
+      products.forEach((product) => {
+        if (!categories[product.category]) {
+          categories[product.category] = [];
+        }
+        categories[product.category].push(product);
+      });
+      return categories;
+    },
+    goToProductPage(productId) {
+      this.$router.push(`/product/${productId}`);
+    },
+  },
 };
 </script>
 
 <style>
-/* General reset for padding and margin */
-* {
+/* General styles */
+html, body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
 }
 
-body, html {
-  height: 100%; /* Ensure the body and html take the full height */
-  overflow: hidden; /* Prevent scrolling on the page */
-}
-
-/* App container with background image */
-.app {
-  min-height: 100vh; /* Ensures full screen height */
-  background-size: cover; /* Ensures the image covers the full viewport */
-  background-position: center; /* Keeps the image centered */
-  background-repeat: no-repeat; /* Prevents repetition */
+#app {
+  min-height: 100%;
   display: flex;
   flex-direction: column;
-  width: 100%; /* Ensures full width */
-  overflow: hidden; /* Prevent any internal scrolling */
-}
-
-/* Default background image for desktop and laptop */
-.app {
-  background-image: url('https://static.vecteezy.com/system/resources/previews/002/909/315/non_2x/bubble-milk-tea-design-collection-pearl-milk-tea-boba-milk-tea-yummy-drinks-coffees-with-doodle-style-banner-illustration-vector.jpg');
-}
-
-/* Background image for tablet and below */
-
-@media screen and (min-width: 1024px) {
-  .app {
-    background-size: cover; /* Ensures the image covers the entire screen */
-    background-position: center center; /* Centers the image */
-  }
 }
 
 /* Navbar styles */
@@ -120,7 +145,6 @@ body, html {
   transition: background-color 0.3s ease;
 }
 
-
 .navbar li.active {
   background-color: #ffffff82;
   font-weight: bold;
@@ -152,74 +176,164 @@ body, html {
   background-color: #ffffff;
   font-weight: bold;
 }
+/* Menu section */
+.menu {
+  padding: 20px;
+  flex: 1;
+  background-color: rgb(255, 255, 255);
+}
 
-/* Home Section styles */
-/* Home Section styles */
-.home {
+h1 {
   text-align: center;
-  padding: 50px;
-  color: #8a5e3c;
-  background-color: rgba(255, 255, 255, 0.874); /* More transparency */
-  margin: auto;
-  width: 80%;
-  max-width: 800px;
-  border-radius: 15px;
-}
-
-
-.home h1 {
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 3em;
-  margin-bottom: 20px;
-  color: #962604;
-}
-
-.home p {
-  font-size: 1.2em;
   margin-bottom: 30px;
-  color: #382517;
+  font-family: 'Arial', sans-serif;
+  font-weight: 900;
+  font-size: 40px;
 }
 
-/* Shop Now button */
-.shop-now {
-  background-color: #c37800;
-  border: none;
-  padding: 10px 20px;
-  font-size: 1.2em;
-  color: white;
-  border-radius: 5px;
+.category {
+  margin-bottom: 40px;
+}
+
+.category h2 {
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Product grid styles */
+.products {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.product-card {
+  background-color: #eeede07d;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 220px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: fit-content;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.shop-now:hover {
-  background-color: #bb8d41;
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive design for tablet and laptop (covers screens from 1024px to 1366px) */
-@media screen and (max-width: 1366px) {
-  .home {
-    width: 90%;
-    padding: 40px;
+.product-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.product-info h3 {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.product-info p {
+  font-size: 0.9em;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.price-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.price {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Responsive design */
+
+/* For tablets (max-width: 1024px) */
+@media screen and (max-width: 1024px) {
+  h1 {
+    font-size: 32px;
   }
 
-  .home h1 {
-    font-size: 2em;
+  .category h2 {
+    font-size: 1.5em;
   }
 
-  .home p {
+  .products {
+    gap: 15px;
+  }
+
+  .product-card {
+    width: 180px;
+    padding: 10px;
+  }
+
+  .product-info h3 {
     font-size: 1.1em;
   }
 
-  .shop-now {
-    font-size: 0.95em;
+  .product-info p {
+    font-size: 0.85em;
+  }
+
+  .price {
+    font-size: 1em;
   }
 }
 
-/* Responsive design for mobile (max-width: 768px) */
+/* For mobile phones (max-width: 768px) */
 @media screen and (max-width: 768px) {
-  
+  h1 {
+    font-size: 28px;
+  }
+
+  .category h2 {
+    font-size: 1.3em;
+  }
+
+  .products {
+    display: grid; /* Use grid layout for better control */
+    grid-template-columns: repeat(3, 1fr); /* 3 columns with equal width */
+    gap: 10px; /* Space between cards */
+  }
+
+  .product-card {
+    width: 100%; /* Take full width of the grid cell */
+    padding: 10px;
+    font-size: 0.9em; /* Adjust text size for compact display */
+  }
+
+  .product-image {
+    width: 100%; /* Ensure the image fits within the reduced card size */
+    height: auto;
+  }
+
+  .product-info h3 {
+    font-size: 1em; /* Reduce title size */
+  }
+
+  .product-info p {
+    font-size: 0.8em; /* Reduce description size */
+  }
+
+  .price {
+    font-size: 0.9em; /* Adjust price text size */
+  }
   .navbar ul {
     gap: 10px;
     font-size: 0.8em; /* Smaller font size for mobile */
@@ -232,32 +346,10 @@ body, html {
   .logout {
     font-size: 0.9em; /* Resize logout button text */
   }
-
-  .shop-now {
-    font-size: 0.9em; /* Resize shop now button text */
-  }
-
-  .home {
-    width: 95%;
-    padding: 30px;
-  }
-
-  .home h1 {
-    font-size: 1.8em;
-  }
-
-  .home p {
-    font-size: 1em;
-  }
-
-  .shop-now {
-    font-size: 0.9em;
-    padding: 8px 16px;
-  }
 }
 
+/* For very small devices (max-width: 576px) */
 @media screen and (max-width: 576px) {
-  
   .navbar {
     padding: 6px 8px; /* Smaller padding */
     gap: 5px; /* Minimize gaps further */
@@ -284,6 +376,34 @@ body, html {
     font-size: 14px; /* Smaller logout text */
     padding: 3px 5px; /* Compact padding */
   }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  .category h2 {
+    font-size: 1.3em;
+  }
+
+  .products {
+    grid-template-columns: repeat(3, 1fr); /* Still maintain 3 columns */
+    gap: 8px; /* Reduce gap for smaller screens */
+  }
+
+  .product-card {
+    padding: 8px; /* Reduce padding */
+  }
+
+  .product-info h3 {
+    font-size: 0.9em; /* Further reduce title size */
+  }
+
+  .product-info p {
+    font-size: 0.7em; /* Further reduce description size */
+  }
+
+  .price {
+    font-size: 0.8em; /* Further adjust price text size */
+  }
 }
 </style>
-
