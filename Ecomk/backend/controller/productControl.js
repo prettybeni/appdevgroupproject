@@ -3,7 +3,6 @@ const multer = require('multer');
 const path = require('path');
 
 // Product controller
-// vsfes
 const productControl = {
   // Fetch all products
   getAllProducts: async (req, res) => {
