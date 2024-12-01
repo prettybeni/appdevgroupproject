@@ -78,7 +78,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 /* Apply background color and animation */
 #bg {
   background: linear-gradient(45deg, #D8C4A3, #A3D8C4, #D8A3C4);
@@ -101,6 +101,9 @@ export default {
   display: flex;
   width: 80%;
   max-width: 1200px;
+  flex-wrap: wrap; /* Allow wrapping on smaller devices */
+  justify-content: center;
+  align-items: center;
 }
 
 .image-container {
@@ -108,13 +111,13 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 20px; /* Add space below image for mobile */
 }
 
 .logo-image {
   width: 80%;
   max-width: 400px;
   height: auto;
-  margin-right: 200px;
 }
 
 .reset-password-container {
@@ -129,6 +132,8 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
+  width: 100%;
+  max-width: 450px; /* Limit the form width */
 }
 
 .form-group {
@@ -168,6 +173,146 @@ button {
   border: none;
   cursor: pointer;
 }
+
+button:hover {
+  background-color: #218838;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.success {
+  color: green;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.footer a {
+  color: #007bff;
+}
+
+h1 {
+  margin-bottom: 30px;
+}
+
+/* Responsive design for tablets and smaller devices (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .content-wrapper {
+    flex-direction: row; /* Keep image on the left and form on the right */
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+  }
+
+  .image-container {
+    flex: 1;
+    max-width: 400px;
+    margin-right: 20px; /* Add some margin to separate the image from the form */
+  }
+
+  .reset-password-container {
+    flex: 1.2;
+    width: 50%;
+    padding: 40px;
+    margin-top: 20px; /* Add space between image and form */
+  }
+
+  .logo-image {
+    width: 70%;
+    max-width: 350px;
+  }
+}
+
+/* Responsive design for mobile devices (max-width: 768px) */
+@media (max-width: 768px) {
+  #bg {
+    background-position: center center;
+    background-size: 100% 100%;
+    flex-direction: column;
+    padding: 0 15px;
+  }
+
+  .content-wrapper {
+    width: 100%;
+    flex-direction: column; /* Stack content vertically */
+    justify-content: center;
+    align-items: center; /* Center the content */
+    text-align: center;
+  }
+
+  .image-container {
+    width: 100%; /* Full width for mobile */
+    margin-bottom: 30px;
+  }
+
+  .logo-image {
+    width: 60%; /* Adjust logo size for mobile */
+    max-width: 300px;
+  }
+
+  .reset-password-container {
+    width: 100%;
+    padding: 20px;
+    max-width: 400px;
+    margin: 0 auto; /* Center the form */
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  input {
+    font-size: 12px;
+    height: 45px;
+  }
+
+  button {
+    font-size: 16px;
+    padding: 12px 0;
+  }
+}
+
+/* Extra small devices (below 576px) */
+@media (max-width: 576px) {
+  .reset-password-container {
+    width: 100%;
+    max-width: 100%; /* Ensure form takes up full width */
+    padding: 10px;
+  }
+
+  .logo-image {
+    width: 50%;
+    max-width: 250px;
+  }
+
+  .content-wrapper {
+    padding: 5%;
+  }
+
+  label {
+    font-size: 12px;
+  }
+
+  input {
+    font-size: 12px;
+    height: 40px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px 0;
+  }
+}
+
 
 button:hover {
   background-color: #218838;
