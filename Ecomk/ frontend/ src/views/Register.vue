@@ -119,14 +119,32 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+/* General Styles for Body and HTML */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-y: auto; /* Allow vertical scrolling */
+}
+
+/* Background gradient */
 #bg {
   background: linear-gradient(45deg, #D8C4A3, #A3D8C4, #D8A3C4);
-  height: 100vh;
   background-size: 600% 600%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start; /* Align items at the top */
+  min-height: 100vh; /* Fallback for viewport height */
+  height: auto; /* Adjust height dynamically */
   animation: gradientAnimation 15s ease infinite;
 }
 
@@ -136,17 +154,66 @@ export default {
   100% { background-position: 0% 50%; }
 }
 
-.content-wrapper { 
+/* Content Wrapper - Centering the form */
+.content-wrapper {
   display: flex;
-  width: 80%; /* Adjust width as needed */
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
   max-width: 1200px;
+  padding: 20px;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  min-height: 100vh; /* Ensure it covers full viewport if content is small */
+}
+
+.image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  min-width: 200px;
+  margin-top: 50px;
+}
+
+.logo-image {
+  width: 80%;
+  max-width: 400px;
+  height: auto;
+}
+
+/* Register Container - Form Styling */
+.register-container {
+  flex: 1;
+  padding: 30px;
+  padding-top: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.13);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  min-width: 320px;
+  max-width: 500px;
+  z-index: 1;
+  /* Add this to ensure it affects the layout's height */
+}
+
+h1 {
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .form-group {
-  margin-bottom: 20px; /* Reduce space between input fields */
+  margin-bottom: 20px;
   display: flex;
-  flex-direction: column; /* Stack label above the textbox */
-  align-items: flex-start; /* Align the label to the left */
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 label {
@@ -155,89 +222,35 @@ label {
   margin-bottom: 5px;
 }
 
-.image-container {
-  flex: 1; /* Takes up half the width */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.logo-image {
-  width: 80%; /* Adjust image size */
-  max-width: 400px; /* Set a max width for the image */
-  height: auto;
-  margin-right: 200px;
-}
-
-.register-container {
-  flex: .6; /* Takes up the other half of the width */
-  padding: 50px 50px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  background-color: rgba(255, 255, 255, 0.13);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Optional: Add shadow for better contrast */
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
-}
-
 input {
   display: block;
-  width: 100%; /* Ensure textboxes take the full width */
-  box-sizing: border-box; /* Ensures padding doesn't affect the width */
-  height: 50px; /* Match the textbox height */
-  background-color: rgba(255,255,255,0.07);
+  width: 100%;
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.07);
   border-radius: 3px;
-  padding: 0 16px; /* Equal padding on both sides */
+  padding: 0 16px;
   font-size: 14px;
   font-weight: 300;
 }
 
 input::placeholder {
-  background-color: rgba(255,255,255,0.07);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-h1 {
-  font-size: 24px;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-/* Make the container a flex container to position the inputs side by side */
 .name-inputs {
   display: flex;
-  justify-content: space-between; /* Space them out equally */
-  gap: 10px; /* Add space between the input fields */
-}
-
-.name-labels {
-  display: flex;
-  justify-content: space-between; /* Space them out equally */
-  gap: 128px; /* Add space between the input fields */
-  
+  justify-content: space-between;
+  gap: 15px;
 }
 
 .name-inputs input {
-  width: 48%; /* Adjust width so they fit together */
-  height: 50px; /* Match the textbox height */
-  background-color: rgba(255,255,255,0.07);
-  border-radius: 3px;
-  padding: 0 16px; /* Equal padding on both sides */
-  font-size: 14px;
-  font-weight: 300;
+  width: 48%;
 }
-
-
-.form-group {
-  margin-bottom: 15px;
-}
-
 
 button {
   margin-top: 20px;
-  width: 100%; /* Ensure the button takes up the full width */
+  width: 100%;
   padding: 15px 0;
   background-color: #28a745;
   color: white;
@@ -272,5 +285,81 @@ button:hover {
 
 .footer a {
   color: #007bff;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .content-wrapper {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 15px;
+  }
+
+  .image-container {
+    flex: 0 1 100%;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .register-container {
+    flex: 0 1 100%;
+    width: 100%;
+    padding: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-image {
+    max-width: 300px;
+    width: 80%;
+  }
+
+  .register-container {
+    max-width: 400px;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  input,
+  button {
+    font-size: 14px;
+    padding: 12px 0;
+  }
+
+  .name-inputs input {
+    width: 48%;
+  }
+}
+
+@media (max-width: 576px) {
+  .logo-image {
+    width: 70%;
+    max-width: 250px;
+  }
+
+  .register-container {
+    max-width: 350px;
+    padding: 20px;
+    width: 90%;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  button {
+    font-size: 16px;
+    padding: 14px 0;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
 }
 </style>
