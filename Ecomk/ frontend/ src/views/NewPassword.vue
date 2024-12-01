@@ -91,7 +91,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 #bg {
   background: linear-gradient(45deg, #D8C4A3, #A3D8C4, #D8A3C4);
   height: 100vh;
