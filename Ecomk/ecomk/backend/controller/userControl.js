@@ -297,6 +297,17 @@ getProfile: (req, res) => {
     }
 },
 
+getAllUsers: async (req, res) => {
+  const { role } = req.params; // Assuming you pass the role as a URL parameter
+  try {
+    const users = await userModel.getAllUsersByRole(role);
+    res.json(users);
+  } catch (err) {
+    console.error('Error fetching users by role:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+},
+
 
 
 

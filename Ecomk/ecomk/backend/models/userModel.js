@@ -76,6 +76,8 @@ validateUserToken : async (token) => {
   }
 },
 
+
+
 deleteUserToken : async (userId) => {
   try {
       await db.execute(
@@ -161,6 +163,14 @@ clearResetToken: (userId) => {
   .then(([result, fields]) => {
     return result; 
   })
+},
+
+getAllUsersByRole: async (role) => {
+  const [rows] = await db.execute(
+    'SELECT * FROM users WHERE role = ?',
+    ['user']
+  );
+  return rows; // Return all matching users
 },
 
 

@@ -1,5 +1,7 @@
 // models/productModel.js
 const db = require('../config/db'); // Database connection
+const path = require('path');
+
 
 // Get all products
 const productModel = {
@@ -160,8 +162,36 @@ createIngredient : async (name, quantity, unit) => {
   }
 },
 
-getAllIngredients: async () => {
-  const query = 'SELECT * FROM ingredients';
+createItem : async (name, quantity, size) => {
+  try {
+    const query = 'INSERT INTO items (name, quantity, size) VALUES (?, ?, ?)';
+    const result = await db.execute(query, [name, quantity, size]);
+    return { id: result.insertId, name, quantity, size };
+  } catch (error) {
+    throw new Error('Database error');
+  }
+},
+
+getAvailableIngredients: async () => {
+  const query = `SELECT * FROM ingredients WHERE status = 'available'`;
+  const [rows] = await db.execute(query);
+  return rows;
+},
+
+getAvailableItems: async () => {
+  const query = `SELECT * FROM items WHERE status = 'available'`;
+  const [rows] = await db.execute(query);
+  return rows;
+},
+
+getArchivedIngredients: async () => {
+  const query = `SELECT * FROM ingredients WHERE status = 'unavailable'`;
+  const [rows] = await db.execute(query);
+  return rows;
+},
+
+getArchivedItems: async () => {
+  const query = `SELECT * FROM items WHERE status = 'unavailable'`;
   const [rows] = await db.execute(query);
   return rows;
 },
@@ -173,6 +203,30 @@ updateIngredientName: async (id, name) => {
   return result;
 },
 
+updateItemName: async (id, name) => {
+  const query = 'UPDATE items SET name = ? WHERE id = ?';
+  const [result] = await db.execute(query, [name, id]);
+  return result;
+},
+
+recoverIngredient : async (id) => {
+  const query = `UPDATE ingredients SET status = 'available' WHERE id = ?`;
+  const [result] = await db.execute(query, [id]);
+  return result;
+},
+
+recoverItem : async (id) => {
+  const query = `UPDATE items SET status = 'available' WHERE id = ?`;
+  const [result] = await db.execute(query, [id]);
+  return result;
+},
+
+recoverProduct : async (id) => {
+  const query = `UPDATE products SET status = 'available' WHERE id = ?`;
+  const [result] = await db.execute(query, [id]);
+  return result;
+},
+
 // Add stock quantity
 addIngredientQuantity: async (id, quantity) => {
   const query = 'UPDATE ingredients SET quantity = quantity + ? WHERE id = ?';
@@ -180,10 +234,150 @@ addIngredientQuantity: async (id, quantity) => {
   return result;
 },
 
+addItemQuantity: async (id, quantity) => {
+  const query = 'UPDATE items SET quantity = quantity + ? WHERE id = ?';
+  const [result] = await db.execute(query, [quantity, id]);
+  return result;
+},
+
+findIngredientByNameAndUnit: async (name, unit) => {
+  const [rows] = await db.execute(
+    'SELECT * FROM ingredients WHERE name = ? AND unit = ?',
+    [name, unit]
+  );
+  return rows[0]; // Return the first matching ingredient or undefined
+},
+
+findItemByNameAndSize: async (name, size) => {
+  const [rows] = await db.execute(
+    'SELECT * FROM items WHERE name = ? AND size = ?',
+    [name, size]
+  );
+  return rows[0]; // Return the first matching ingredient or undefined
+},
+
+deleteProduct : (productId) => {
+  return new Promise((resolve, reject) => {
+    const query = `UPDATE products SET status = 'unavailable' WHERE id = ?`;
+    db.query(query, [productId], (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+},
+
+deleteArchivedItems : (productId) => {
+  return new Promise((resolve, reject) => {
+    const query = `DELETE FROM items WHERE id = ?`;
+    db.query(query, [productId], (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+},
+
+deleteArchivedProduct : (productId) => {
+  return new Promise((resolve, reject) => {
+    const query = `DELETE FROM products WHERE id = ?`;
+    db.query(query, [productId], (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+},
+
+findById : async (id) => {
+  const [rows] = await db.execute('SELECT * FROM products WHERE id = ?', [id]);
+  return rows[0];
+},
+
+update : async (id, { name, price, category, image_url }) => {
+  const [result] = await db.execute(
+    'UPDATE products SET name = ?, price = ?, category = ?, image_url = ? WHERE id = ?',
+    [name, price, category, image_url, id]
+  );
+  if (result.affectedRows > 0) {
+    return { id, name, price, category, image_url };
+  } else {
+    throw new Error('Product update failed');
+  }
+},
+
+updateStatus: async (id) => {
+  const [result] = await db.execute(
+    `UPDATE ingredients SET status = ? WHERE id = ?`,
+    ['unavailable', id]
+  );
+
+  if (result.affectedRows > 0) {
+    return result; // Return the result directly
+  } else {
+    throw new Error('Ingredient update failed');
+  }
+},
+
+updateItemStatus: async (id) => {
+  const [result] = await db.execute(
+    `UPDATE items SET status = ? WHERE id = ?`,
+    ['unavailable', id]
+  );
+
+  if (result.affectedRows > 0) {
+    return result; // Return the result directly
+  } else {
+    throw new Error('Ingredient update failed');
+  }
+},
+
+// Update the quantity of an existing ingredient
+updateIngredientQuantity: async (id, newQuantity) => {
+  await db.execute(
+    'UPDATE ingredients SET quantity = ? WHERE id = ?',
+    [newQuantity, id]
+  );
+  const [rows] = await db.execute(
+    'SELECT * FROM ingredients WHERE id = ?',
+    [id]
+  );
+  return rows[0]; // Return the updated ingredient
+},
+
+updateItemQuantity: async (id, newQuantity) => {
+  await db.execute(
+    'UPDATE items SET quantity = ? WHERE id = ?',
+    [newQuantity, id]
+  );
+  const [rows] = await db.execute(
+    'SELECT * FROM items WHERE id = ?',
+    [id]
+  );
+  return rows[0]; // Return the updated ingredient
+},
+
 getAllProducts :async (callback) => {
   try {
     // Use await instead of providing a callback
-    const [rows, fields] = await db.query('SELECT * FROM products');
+    const [rows, fields] = await db.query(`SELECT * FROM products WHERE status = 'available'`);
+    return rows; // Return the result
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error; // Re-throw the error if needed
+  }
+},
+
+getArchivedProducts :async (callback) => {
+  try {
+    // Use await instead of providing a callback
+    const [rows, fields] = await db.query(`SELECT * FROM products WHERE status = 'unavailable'`);
     return rows; // Return the result
   } catch (error) {
     console.error('Error fetching products:', error);
