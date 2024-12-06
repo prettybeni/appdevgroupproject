@@ -87,6 +87,36 @@ const routes = [
     name: 'user-profile',
     component: () => import( '../views/userProfile.vue')
   },
+  {
+    path: '/admin/archived-ingredients',
+    name: 'delete-ingredient',
+    component: () => import( '../views/deleteIngredient.vue')
+  },
+  {
+    path: '/admin/archived-products',
+    name: 'delete-product',
+    component: () => import( '../views/deleteProduct.vue')
+  },
+  {
+    path: '/admin/addItem',
+    name: 'addItem',
+    component: () => import( '../views/addItem.vue')
+  },
+  {
+    path: '/admin/manageItem',
+    name: 'manageItem',
+    component: () => import( '../views/manageItem.vue')
+  },
+  {
+    path: '/admin/deleteItem',
+    name: 'deleteItem',
+    component: () => import( '../views/deleteItem.vue')
+  },
+  {
+    path: '/admin/viewUsers',
+    name: 'users',
+    component: () => import( '../views/users.vue')
+  },
 ]
 
 const router = createRouter({
