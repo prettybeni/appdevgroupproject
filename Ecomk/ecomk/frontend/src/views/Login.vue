@@ -87,16 +87,27 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%; /* Ensure the body and html take the full height */
+}
 /* Apply background color to the entire page */
 #bg {
   background: linear-gradient(45deg, #D8C4A3, #A3D8C4, #D8A3C4);
-  height: 100vh; /* Ensure it takes up the full height of the viewport */
+  min-height: 100vh; /* Ensure it takes at least the full height of the viewport */
+  height: auto; /* Allow the height to adapt to the content */
   background-size: 600% 600%;
   display: flex;
   justify-content: center;
   align-items: center;
   animation: gradientAnimation 15s ease infinite;
+  padding: 20px; /* Add padding for better spacing on smaller devices */
 }
 
 @keyframes gradientAnimation {
@@ -108,27 +119,32 @@ export default {
 /* Container for image and login form side by side */
 .content-wrapper {
   display: flex;
-  width: 80%; /* Adjust width as needed */
+  width: 90%; /* Adjusted for better fit on all screens */
   max-width: 1200px; /* Set max-width */
+  flex-wrap: wrap; /* Allow content to stack on smaller screens */
+  justify-content: center;
+  align-items: center;
 }
 
+/* Image container adjustments */
 .image-container {
   flex: 1; /* Takes up half the width */
   display: flex;
   justify-content: center;
   align-items: center;
+  max-width: 50%; /* Ensure image is responsive */
 }
 
 .logo-image {
   width: 80%; /* Adjust image size */
   max-width: 400px; /* Set a max width for the image */
   height: auto;
-  margin-right: 200px;
 }
 
+/* Login form container */
 .login-container {
-  flex: .6; /* Takes up the other half of the width */
-  padding: 50px 40px;
+  flex: 1; /* Takes up the other half of the width */
+  padding: 40px;
   border: 2px solid rgba(255, 255, 255, 0.1);
   background-color: rgba(255, 255, 255, 0.13);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Optional: Add shadow for better contrast */
@@ -138,6 +154,9 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
+  max-width: 450px; /* Limit form width */
+  width: 100%; /* Make form responsive */
+  margin-top: 50px;
 }
 
 /* Form group styling */
@@ -169,14 +188,16 @@ input {
 #res {
   font-size: 14px;
   text-align: right;
-  margin-left: 58%;
+  margin-top: 10px; /* Add spacing above */
+  display: block; /* Ensure it takes its own line */
+  width: 100%; /* Make sure it doesn't overflow */
 }
 
-.form-group a{
+.form-group a {
   color: #007bff;
-
 }
 
+/* Button styling */
 button {
   margin-top: 20px;
   width: 100%; /* Ensure the button takes up the full width */
@@ -194,12 +215,14 @@ button:hover {
   background-color: #218838;
 }
 
+/* Error message styling */
 .error {
   color: red;
   margin-top: 10px;
   text-align: center;
 }
 
+/* Footer styling */
 .footer {
   margin-top: 20px;
   text-align: center;
@@ -209,4 +232,163 @@ button:hover {
 .footer a {
   color: #007bff;
 }
+
+/* Responsive design for tablets and smaller devices (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .content-wrapper {
+    flex-direction: column; /* Stack the image and form vertically */
+    width: 90%;
+  }
+
+  .image-container {
+    max-width: 100%;
+    margin-top: 50px;
+    margin-bottom: 20px; /* Add space between image and form */
+  }
+
+  .login-container {
+    width: 80%;
+    padding: 30px;
+  }
+
+  .logo-image {
+    width: 70%; /* Adjust image size */
+    max-width: 350px;
+  }
+
+  /* Adjust font sizes and button for smaller devices */
+  label {
+    font-size: 14px;
+  }
+
+  input {
+    font-size: 12px;
+  }
+
+  button {
+    font-size: 16px;
+    padding: 12px 0;
+  }
+}
+
+/* Responsive design for mobile devices (max-width: 768px) */
+@media (max-width: 768px) {
+  #bg {
+    background-size: 100% 100%;
+    padding: 15px; /* Ensure spacing around the content */
+    align-items: flex-start; /* Align content to the top on small devices */
+  }
+
+  #res {
+    text-align: right; /* Align to the right */
+    margin-left: 0; /* Remove unnecessary left margin */
+    margin-top: 10px; /* Ensure proper spacing */
+    font-size: 12px; /* Adjust font size for mobile */
+  }
+
+  .form-group {
+    margin-bottom: 15px; /* Reduce space between form fields */
+  }
+
+  .content-wrapper {
+    flex-direction: column; /* Stack content vertically */
+    width: 100%;
+    padding: 10px;
+  }
+
+  .image-container {
+    width: 100%; /* Full-width for mobile */
+    margin-bottom: 30px; /* Increase spacing */
+  }
+
+  .logo-image {
+    width: 60%; /* Adjust logo size for mobile */
+    max-width: 300px;
+  }
+
+  .login-container {
+    margin-top: 20px; /* Add some space above the form */
+    margin-bottom: 20px; /* Add space below the form to avoid cutting off background */
+  }
+
+  label {
+    font-size: 12px;
+  }
+
+  input {
+    font-size: 12px;
+    height: 45px;
+  }
+
+  button {
+    font-size: 16px;
+    padding: 12px 0;
+  }
+}
+
+/* Extra small devices (below 576px) */
+@media (max-width: 576px) {
+  .login-container {
+    width: 100%;
+    max-width: 100%; /* Ensure the form takes up the full width */
+    padding: 10px;
+  }
+
+  .logo-image {
+    width: 50%;
+    max-width: 250px;
+  }
+
+  .content-wrapper {
+    padding: 5%;
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  input {
+    font-size: 12px;
+    height: 40px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px 0;
+  }
+}
+
+/* Extra small devices (below 576px) */
+@media (max-width: 576px) {
+  .login-container {
+    margin-top: -30px;
+    width: 100%;
+    padding: 15px;
+  }
+
+  .logo-image {
+    margin-top: -90px;
+    width: 50%;
+    max-width: 250px;
+  }
+
+  .content-wrapper {
+    padding: 5%;
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  input {
+    font-size: 12px;
+    height: 40px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px 0;
+  }
+}
+
 </style>
